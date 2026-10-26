@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101313">
+  <title>B3A · Shenzhen Bay Port → Fu Tai Estate</title>
+  <style>
+:root{color-scheme:dark;font-family:'Segoe UI','Microsoft YaHei',sans-serif;background:#101313;color:#f2f5ee;--lime:#d5fa65;--muted:#a0aaa4;--line:#ffffff16}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:32px 24px;background:radial-gradient(ellipse at 90% 0%,#29402a44,transparent 50%),#101313}main{max-width:1080px;margin:auto}.masthead,.brand,.route-top,.section-label,.controls{display:flex;align-items:center;justify-content:space-between;gap:16px}.masthead{padding-bottom:22px;border-bottom:1px solid var(--line)}.brand{justify-content:flex-start;gap:10px;font-size:13px;font-weight:700;letter-spacing:.12em}.brand svg{width:28px;height:28px;color:var(--lime)}.clock{font:12px Consolas,monospace;color:#b9c4bc;font-variant-numeric:tabular-nums}.intro{padding:32px 0}.eyebrow{margin:0 0 10px;color:var(--lime);font:10px Consolas,monospace;letter-spacing:.18em}.intro h2{margin:0;font-size:clamp(27px,4vw,42px);font-weight:550;letter-spacing:-.045em}.intro h2 span{color:#8b958e}.intro p:last-child{margin:13px 0 0;font-size:13px;color:var(--muted)}.board{display:grid;grid-template-columns:.9fr 1.15fr;gap:18px;align-items:stretch;animation:enter .5s ease-out both}.route,.content{border:1px solid var(--line);border-radius:26px;min-width:0}.route{background:linear-gradient(145deg,#252d29,#1a201d);padding:28px;position:relative;overflow:hidden;display:flex;flex-direction:column}.route:after{content:'';position:absolute;width:270px;height:270px;border:1px solid #d5fa6510;border-radius:50%;right:-185px;top:120px;box-shadow:0 0 0 30px #d5fa6505,0 0 0 60px #d5fa6503;pointer-events:none}.route-top{align-items:center}.badge{font-size:48px;font-weight:800;letter-spacing:-.065em;line-height:1;color:var(--lime)}.route-chip{border:1px solid #ffffff25;border-radius:30px;padding:7px 11px;font-size:10px;color:#b9c6bc;white-space:nowrap}.journey{margin:34px 0 24px;position:relative;padding-left:26px;border-left:1px dashed #697a58}.journey:before,.journey:after{content:'';position:absolute;left:-5px;width:9px;height:9px;border-radius:50%;background:#1e2621;border:2px solid var(--lime)}.journey:before{top:4px}.journey:after{bottom:40px;background:var(--lime);box-shadow:0 0 0 5px #d5fa6510}.stop-label{font:10px Consolas,monospace;letter-spacing:.14em;color:#a3b198;margin:0 0 11px}.origin{margin:0 0 30px;font-size:20px;line-height:1.3;letter-spacing:-.025em}#origin-cn{display:block;font-size:13px;margin-top:7px;color:var(--muted)}h1{font-size:clamp(24px,3vw,32px);line-height:1.13;margin:0;letter-spacing:-.04em;font-weight:650}.destination-cn{margin:10px 0 0;font-size:13px;color:#b2c1aa;line-height:1.5}.direction{font-size:11px;color:#a4b39c;margin:0 0 24px 26px}button{font:inherit;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}button:hover{transform:translateY(-1px)}button:active{transform:translateY(0)}button:disabled{cursor:wait;opacity:.5;transform:none}button:focus-visible,a:focus-visible{outline:2px solid var(--lime);outline-offset:5px}.swap{margin-top:auto;width:100%;padding:14px 16px;background:#ffffff07;border:1px solid #ffffff24;border-radius:13px;color:#e1e9dc;font-size:13px}.swap:hover{background:#d5fa6514;border-color:#d5fa6560}.content{background:#191e1c;padding:26px}.section-label{font-size:13px;font-weight:600;margin-bottom:20px}.section-label small{display:block;margin-top:5px;color:#8e9a92;font:9px Consolas,monospace;letter-spacing:.16em}.status{font-size:10px;color:#c3e2b3;font-weight:400;display:inline-flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid #c3e2b326;background:#c3e2b308;border-radius:20px;white-space:nowrap}.status:before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px #c3e2b310}.status.warning{color:#f6c982;border-color:#f6c98240}.arrivals{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.arrival{display:flex;align-items:flex-start;justify-content:space-between;flex-direction:column;gap:20px;background:#252c27;border:1px solid #ffffff08;border-radius:17px;padding:19px;min-width:0}.arrival:first-child{grid-column:1/-1;flex-direction:row;align-items:center;background:var(--lime);border-color:var(--lime);color:#1b2817;padding:25px 24px;min-height:160px;position:relative;overflow:hidden}.arrival:first-child:after{content:'';position:absolute;border:1px solid #1b28170c;border-radius:50%;width:220px;height:220px;right:-55px;top:-65px;pointer-events:none}.arrival-label{font-size:12px;font-weight:600}.arrival:first-child .arrival-label:before{content:'NEXT BUS';display:block;font:9px Consolas,monospace;letter-spacing:.15em;opacity:.65;margin-bottom:10px}.arrival-time,.remark{font-size:11px;color:#aebbac;margin-top:7px;line-height:1.5}.arrival:first-child .arrival-time,.arrival:first-child .remark{color:#41562c}.wait{font-size:39px;line-height:1;letter-spacing:-.06em;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}.arrival:first-child .wait{font-size:clamp(65px,7vw,88px);z-index:1}.unit{font-size:11px;margin-left:6px;font-weight:400;letter-spacing:0;color:#aebbac}.arrival:first-child .unit{color:#41562c;font-size:12px}.empty{grid-column:1/-1;padding:40px 20px;border:1px dashed #ffffff24;border-radius:17px;color:var(--muted);font-size:14px;line-height:1.7}.notice{font-size:12px;color:#f6c982;background:#f6c9820c;border-radius:10px;padding:12px;line-height:1.5}.notice:empty{display:none}.controls{margin-top:23px}.updated{font-size:10px;line-height:1.9;color:#a0aaa4;font-variant-numeric:tabular-nums}#refresh{border:1px solid #ffffff20;border-radius:10px;background:#ffffff05;padding:10px 12px;color:#cad7c6;font-size:11px;white-space:nowrap}#refresh:hover{background:#ffffff10;border-color:#ffffff40}.refresh-progress{display:block;width:100%;height:4px;margin-top:16px;border:0;border-radius:999px;overflow:hidden;appearance:none;background:#ffffff0c;accent-color:var(--lime)}.refresh-progress::-webkit-progress-bar{background:#ffffff0c;border-radius:999px}.refresh-progress::-webkit-progress-value{background:var(--lime);border-radius:999px;transition:width .8s linear}.refresh-progress::-moz-progress-bar{background:var(--lime);border-radius:999px}.refresh-progress:indeterminate{opacity:.5}footer{margin-top:22px;padding:20px 2px;border-top:1px solid var(--line);color:#a0aaa4;font-size:11px;line-height:1.9;display:flex;gap:32px;justify-content:space-between}footer p{margin:0;max-width:510px}.source{flex-shrink:0;text-align:right}a{color:#c2cfb9;text-underline-offset:4px;text-decoration-color:#c2cfb940}a:hover{color:var(--lime)}@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(max-width:760px){body{padding:24px 18px}main{max-width:540px}.board{grid-template-columns:1fr;gap:14px}.intro{padding:26px 0}.route{padding:24px}.journey{margin:25px 0 18px}.origin{margin-bottom:23px}.direction{margin-bottom:20px}.badge{font-size:38px}.content{padding:22px}.arrival:first-child{min-height:145px}footer{display:block}.source{text-align:left;margin-top:16px}}@media(max-width:360px){body{padding:18px 12px}.content{padding:16px}.arrival{padding:15px}.arrival:first-child{padding:20px 16px}.arrival:first-child .wait{font-size:57px}.brand{font-size:11px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5" y="2" width="14" height="18" rx="3"/><path d="M5 7h14M5 13h14M8 20v2m8-2v2M9 4h6"/><circle cx="8.5" cy="16.5" r=".7"/><circle cx="15.5" cy="16.5" r=".7"/></svg>Next bus / 城巴</div>
+      <div class="clock" id="clock">Hong Kong time</div>
+    </header>
+    <section class="intro" aria-label="实时公交看板">
+      <p class="eyebrow">HONG KONG ↔ SHENZHEN · B3A</p>
+      <h2>下一班，<span>即刻掌握。</span></h2>
+      <p>跨境出行少一点等待。实时班次，每 30 秒自动更新。</p>
+    </section>
+    <article class="board" aria-label="B3A bus arrivals">
+      <div class="route">
+        <div class="route-top"><div class="badge">B3A</div><span class="route-chip">跨境专线 ↗</span></div>
+        <div class="journey"><p class="stop-label">FROM / 上车</p>
+          <p class="origin"><span id="origin-en" style="font: inherit; color: inherit; margin: 0; display: inline">Shenzhen Bay Port</span> <span id="origin-cn" lang="zh-Hant">深圳灣口岸</span></p>
+          <p class="stop-label">TO / 下车</p><h1 id="destination">Fu Tai Estate</h1>
+          <p class="destination-cn" id="destination-cn" lang="zh-Hant">富泰邨 · 富泰商場下車</p>
+        </div>
+        <div class="direction" id="direction">Toward Shan King Estate ↗</div>
+        <button class="swap" id="swap" type="button">⇄ &nbsp; 交换起终点 &nbsp; / &nbsp; Swap</button>
+      </div>
+      <div class="content">
+        <div class="section-label"><span>即将到站 / 发车<small>UPCOMING BUSES</small></span><span class="status" id="status" role="status">Connecting</span></div>
+        <ol class="arrivals" id="arrivals" aria-label="Minutes until each bus departs Shenzhen Bay Port"><li class="empty">Getting the next buses…</li></ol>
+        <p class="notice" id="notice" role="status"></p>
+        <div class="controls">
+          <div class="updated"><div id="updated">Waiting for Citybus data</div><div id="refresh-countdown">Refreshes every 30 seconds</div></div>
+          <button id="refresh" type="button">↻ 刷新</button>
+        </div>
+        <progress class="refresh-progress" id="refresh-progress" max="30" value="0" aria-label="自动刷新进度" aria-describedby="refresh-countdown"></progress>
+      </div>
+    </article>
+    <footer>
+      <p id="boarding">深圳湾口岸上车，乘搭往山景邨方向的 B3A，于青山公路「富泰商场」下车。分钟数表示距离口岸发车的预计等待时间。</p>
+      <p class="source">Citybus × <a href="https://data.gov.hk/en-data/dataset/ctb-eta-transport-realtime-eta" target="_blank" rel="noopener noreferrer">DATA.GOV.HK ↗</a><br>预计时间仅供参考 · 香港时间 HKT</p>
+    </footer>
+    <noscript><p>Enable JavaScript to see live bus arrivals.</p></noscript>
+  </main>
+  <script>
+    'use strict';
+    // Verified Citybus boarding points: inbound 003208/1 and outbound 003261/14.
+    const directions = [
+      { stop: '003208', dir: 'I', seq: 1, origin: 'Shenzhen Bay Port', originCN: '深圳灣口岸', destination: 'Fu Tai Estate', destinationCN: '富泰邨 · 富泰商場下車', sign: 'Toward Shan King Estate ↗', boarding: '深圳湾口岸上车，乘搭往山景邨方向的 B3A，于青山公路「富泰商场」下车。分钟数表示距离口岸发车的预计等待时间。' },
+      { stop: '003261', dir: 'O', seq: 14, origin: 'Fu Tai Estate', originCN: '富泰邨', destination: 'Shenzhen Bay Port', destinationCN: '深圳灣口岸', sign: 'Toward Shenzhen Bay ↗', boarding: '于青山公路「富泰邨」站上车，前往深圳湾口岸。分钟数表示距离巴士到达上车站的预计等待时间。' }
+    ];
+    let directionIndex = 0;
+    const REFRESH_MS = 30000;
+    const STALE_MS = 180000;
+    const byId = id => document.getElementById(id);
+    const timeFormat = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Hong_Kong', hour: '2-digit', minute: '2-digit' });
+    const preciseFormat = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Hong_Kong', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    let records = [], sourceTime = null, lastSuccess = null, loading = false, failed = false, nextRefresh = Date.now() + REFRESH_MS;
+
+    function element(tag, className, text) {
+      const node = document.createElement(tag);
+      node.className = className;
+      node.textContent = text;
+      return node;
+    }
+
+    function render() {
+      const now = Date.now();
+      byId('clock').textContent = timeFormat.format(now) + ' · HKT';
+      byId('refresh-countdown').textContent = loading ? '正在更新班次…' : `${Math.max(0, Math.ceil((nextRefresh - now) / 1000))} 秒后刷新 · 每 30 秒自动更新`;
+      const progress = byId('refresh-progress');
+      if (loading) {
+        progress.removeAttribute('value');
+        progress.setAttribute('aria-valuetext', '正在获取最新班次');
+      } else {
+        progress.value = Math.min(30, Math.max(0, (REFRESH_MS - (nextRefresh - now)) / 1000));
+        progress.setAttribute('aria-valuetext', `距离下次刷新还有 ${Math.max(0, Math.ceil((nextRefresh - now) / 1000))} 秒`);
+      }
+      if (!lastSuccess && !failed) return;
+      const stale = sourceTime !== null && now - sourceTime > STALE_MS;
+      const status = byId('status');
+      status.textContent = failed ? '连接异常' : stale ? '数据延迟' : '实时预估';
+      status.classList.toggle('warning', failed || stale);
+      byId('notice').textContent = failed
+        ? (lastSuccess ? 'Unable to refresh. Showing the last received estimates; retrying automatically.' : 'Citybus could not be reached. Check your connection; retrying automatically.')
+        : stale ? 'Citybus has not updated these estimates recently. Arrival times may be out of date.' : '';
+      const upcoming = records.filter(row => Number.isFinite(Date.parse(row.eta)) && Date.parse(row.eta) >= now - 30000)
+        .sort((a, b) => Date.parse(a.eta) - Date.parse(b.eta));
+      const seen = new Set();
+      const unique = upcoming.filter(row => { if (seen.has(row.eta)) return false; seen.add(row.eta); return true; });
+      const list = byId('arrivals');
+      list.replaceChildren();
+      if (!unique.length) {
+        const remarks = [...new Set(records.map(row => row.rmk_en).filter(Boolean))].join(' · ');
+        list.append(element('li', 'empty', !lastSuccess ? 'Live arrivals are temporarily unavailable.' : remarks || 'No upcoming arrival estimates are currently available. Checking again in 30 seconds.'));
+      }
+      unique.forEach((row, index) => {
+        const item = element('li', 'arrival', '');
+        const details = element('div', '', '');
+        details.append(element('div', 'arrival-label', index === 0 ? '下一班' : `后续班次 · 0${index + 1}`));
+        details.append(element('div', 'arrival-time', `${directionIndex === 0 ? '预计发车' : '预计到站'} ${timeFormat.format(new Date(row.eta))}`));
+        if (row.rmk_en) details.append(element('div', 'remark', row.rmk_en));
+        const minutes = Math.max(0, Math.ceil((Date.parse(row.eta) - now) / 60000));
+        const wait = element('div', 'wait', String(minutes));
+        wait.append(element('span', 'unit', 'min'));
+        item.append(details, wait);
+        list.append(item);
+      });
+    }
+
+    async function refresh() {
+      if (loading) return;
+      loading = true;
+      nextRefresh = Date.now() + REFRESH_MS;
+      byId('refresh').disabled = true; byId('swap').disabled = true;
+      render();
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+      try {
+        const selected = directions[directionIndex];
+        const API = 'https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/' + selected.stop + '/B3A';
+        const response = await fetch(API, { signal: controller.signal, cache: 'no-store' });
+        if (!response.ok) throw new Error(`Citybus HTTP ${response.status}`);
+        const payload = await response.json();
+        if (!Array.isArray(payload.data)) throw new Error('Unexpected Citybus response');
+        records = payload.data.filter(row => row.co === 'CTB' && row.route === 'B3A' && row.dir === selected.dir && row.stop === selected.stop && Number(row.seq) === selected.seq);
+        const timestamps = records.map(row => Date.parse(row.data_timestamp)).filter(Number.isFinite);
+        const generated = Date.parse(payload.generated_timestamp);
+        sourceTime = timestamps.length ? Math.min(...timestamps) : Number.isFinite(generated) ? generated : null;
+        lastSuccess = Date.now();
+        failed = false;
+        byId('updated').textContent = `更新于 ${preciseFormat.format(lastSuccess)} HKT`;
+      } catch (error) {
+        failed = true;
+        console.warn('Unable to refresh Citybus arrivals:', error);
+      } finally {
+        clearTimeout(timeout);
+        loading = false;
+        byId('refresh').disabled = false; byId('swap').disabled = false;
+        render();
+      }
+    }
+    byId('swap').addEventListener('click', () => {
+      if (loading) return;
+      directionIndex = 1 - directionIndex;
+      const selected = directions[directionIndex];
+      document.title = `B3A · ${selected.origin} → ${selected.destination}`;
+      byId('origin-en').textContent = selected.origin;
+      byId('origin-cn').textContent = selected.originCN;
+      byId('destination').textContent = selected.destination;
+      byId('destination-cn').textContent = selected.destinationCN;
+      byId('direction').textContent = selected.sign;
+      byId('boarding').textContent = selected.boarding;
+      byId('arrivals').setAttribute('aria-label', `Minutes until each bus ${directionIndex === 0 ? 'departs' : 'arrives at'} ${selected.origin}`);
+      records = []; sourceTime = null; lastSuccess = null; failed = false;
+      byId('arrivals').replaceChildren(element('li', 'empty', 'Getting the next buses…'));
+      byId('status').textContent = 'Connecting';
+      byId('status').classList.remove('warning');
+      byId('notice').textContent = '';
+      byId('updated').textContent = 'Waiting for Citybus data';
+      refresh();
+    });
+    byId('refresh').addEventListener('click', refresh);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() >= nextRefresh) refresh(); });
+    window.addEventListener('online', refresh);
+    setInterval(() => { if (Date.now() >= nextRefresh && !loading) refresh(); else render(); }, 1000);
+    refresh();
+  </script>
+</body>
+</html>
+
+
+

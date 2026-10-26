@@ -67,6 +67,23 @@
     .swap svg { width: 14px; height: 14px; transition: transform .2s; }
     .swap:hover svg { transform: rotate(180deg); }
     .route-hint { margin: 13px 0 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .last-service { margin: 0 0 16px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; font-size: 11px; line-height: 1.7; color: var(--muted); }
+    .last-service strong { display: block; color: #e1eadb; font-size: 12px; }
+    .last-service.urgent { border-color: #a17d3b; background: #e9bf7710; }
+    .last-service.urgent strong { color: #e9bf77; }
+    .last-bus-badge { display: block; width: fit-content; margin-top: 8px; padding: 3px 7px; border-radius: 5px; background: #533f1d; color: #ffe0a2; font-size: 10px; }
+    .timetable { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .timetable summary { cursor: pointer; font-size: 12px; font-weight: 600; padding: 4px 0; }
+    .timetable summary:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+    .timetable-tools { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 15px; font-size: 11px; }
+    #timetable-day { max-width: 100%; min-height: 34px; background: #222e25; color: #dce9d7; border: 1px solid #3b4c3f; border-radius: 8px; padding: 6px 8px; font: inherit; }
+    .schedule-note { font-size: 10px; color: var(--muted); line-height: 1.7; margin: 12px 0; }
+    .service-hours { display: flex; gap: 20px; padding: 12px 0; font-size: 11px; }
+    .service-hours strong { color: var(--green); margin-left: 6px; font-variant-numeric: tabular-nums; }
+    .timetable table { width: 100%; border-collapse: collapse; font-size: 11px; font-variant-numeric: tabular-nums; }
+    .timetable caption { text-align: left; color: var(--muted); margin: 0 0 10px; line-height: 1.6; }
+    .timetable th, .timetable td { text-align: left; padding: 9px 4px; border-bottom: 1px solid var(--line); }
+    .timetable th { color: var(--muted); font-weight: 400; }
     .header-tools { display: flex; align-items: center; gap: 12px; margin-left: auto; }
     .language-picker { display: inline-flex; align-items: center; gap: 6px; }
     .language-picker svg { width: 15px; height: 15px; color: var(--muted); }
@@ -99,9 +116,19 @@
         <p class="route-hint" id="route-hint">乘搭往深圳湾口岸方向的 B3A</p>
       </div>
       <div class="content">
+        <aside class="last-service" id="last-service" aria-label="末班车提醒"><strong id="last-service-title"></strong><span id="last-service-message" role="status"></span></aside>
         <div class="section-label"><span><span id="arrival-heading">即将到站</span> <small data-i18n="upcoming">UPCOMING</small></span><span class="status" id="status" role="status">连接中</span></div>
         <ol class="arrivals" id="arrivals" aria-label="巴士距离富泰邨站的预计到站分钟数"><li class="empty">正在获取实时班次…</li></ol>
         <p class="notice" id="notice" role="status"></p>
+        <details class="timetable" id="timetable">
+          <summary data-i18n="timetable">时间表与末班车</summary>
+          <div class="timetable-tools"><label for="timetable-day" data-i18n="serviceDay">服务日</label><select id="timetable-day"><option value="school" data-i18n="schoolDay">周一至五（上课日）</option><option value="schoolHoliday" data-i18n="schoolHoliday">周一至五（学校假期）</option><option value="sat" data-i18n="saturday">星期六</option><option value="holiday" data-i18n="sundayHoliday">星期日及公众假期</option></select></div>
+          <p class="schedule-note" data-i18n="daySelection">请手动选择适用服务日；学校假期及公众假期不会自动识别。</p>
+          <div class="service-hours"><span><span data-i18n="firstBus">首班</span><strong id="first-bus"></strong></span><span><span data-i18n="lastBus">末班</span><strong id="last-bus"></strong></span></div>
+          <table><caption id="timetable-origin"></caption><thead><tr><th scope="col" data-i18n="period">发车时段</th><th scope="col" data-i18n="headway">班距（分钟）</th></tr></thead><tbody id="timetable-rows"></tbody></table>
+          <p class="schedule-note" id="timetable-note"></p>
+          <p class="schedule-note"><a href="https://www.td.gov.hk/filemanager/en/content_13/TNTM/TA_CTB%20B3_B3A_ENG.pdf" target="_blank" rel="noopener noreferrer" data-i18n="scheduleSource">官方时间表（2025-08-25 生效）↗</a></p>
+        </details>
         <div class="refresh-panel">
           <div class="controls">
             <div class="updated"><div id="refresh-countdown">每 30 秒自动刷新</div><div id="updated">等待城巴数据</div></div>
@@ -154,11 +181,50 @@
         ]
       }
     };
+    // Published reference timetable, effective 2025-08-25 (Transport Department).
+    // Times are departures from the terminus, never invented Fu Tai stop ETAs.
+    const schedules = [
+      { first: '06:00', last: '22:20', days: {
+        school: [['06:00–08:30', '30'], ['08:30–09:45', '25'], ['09:45–15:45', '30'], ['15:45–16:15', '15'], ['16:15–19:45', '30'], ['19:45–20:20', '35'], ['20:20–22:20', '30']],
+        schoolHoliday: [['06:00–08:30', '30'], ['08:30–09:45', '25'], ['09:45–19:45', '30'], ['19:45–20:20', '35'], ['20:20–22:20', '30']],
+        sat: [['06:00–07:00', '30'], ['07:00–08:00', '20'], ['08:00–12:45', '15'], ['12:45–17:45', '20'], ['17:45–19:45', '30'], ['19:45–20:20', '35'], ['20:20–22:20', '30']],
+        holiday: [['06:00–07:00', '30'], ['07:00–08:00', '20'], ['08:00–11:45', '15'], ['11:45–13:45', '20'], ['13:45–19:45', '30'], ['19:45–20:20', '35'], ['20:20–22:20', '30']]
+      } },
+      { first: '06:50', last: '23:35', days: {
+        school: [['06:50–07:15', '25'], ['07:15–08:15', '30'], ['09:00–09:30', '30'], ['09:30–10:45', '25'], ['10:45–16:15', '30'], ['16:15–18:15', '20'], ['18:15–23:15', '30'], ['23:15–23:35', '20']],
+        schoolHoliday: [['06:50–07:15', '25'], ['07:15–08:15', '30'], ['08:15–09:00', '45'], ['09:00–09:30', '30'], ['09:30–10:45', '25'], ['10:45–16:15', '30'], ['16:15–18:15', '20'], ['18:15–23:15', '30'], ['23:15–23:35', '20']],
+        sat: [['06:50–07:15', '25'], ['07:15–16:15', '30'], ['16:15–19:35', '20'], ['19:35–23:35', '12']],
+        holiday: [['06:50–07:15', '25'], ['07:15–14:45', '30'], ['14:45–17:00', '15'], ['17:00–20:00', '12'], ['20:00–22:15', '9'], ['22:15–22:25', '10'], ['22:25–22:55', '15'], ['22:55–23:35', '20']]
+      } }
+    ];
+    const scheduleLabels = {
+      'zh-CN': {
+        timetable: '时间表与末班车', serviceDay: '服务日', schoolDay: '周一至五（上课日）', schoolHoliday: '周一至五（学校假期）', saturday: '星期六', sundayHoliday: '星期日及公众假期', daySelection: '请手动选择适用服务日；学校假期及公众假期不会自动识别。', firstBus: '首班', lastBus: '末班', period: '发车时段', headway: '班距（分钟）', scheduleSource: '官方参考时间表（2025-08-25 生效）↗', terminusOut: '山景邨开出 · 往深圳湾口岸', terminusIn: '深圳湾口岸开出 · 往山景邨', timetableOut: '这是山景邨发车时间，不是富泰邨到站时间；富泰邨请以实时预估为准。时间表为参考，临时调整以城巴公告为准。', timetableIn: '这是深圳湾口岸发车时间，富泰商场下车。时间表为参考，临时调整以城巴公告为准。', schoolSpecial: '上课日另有 08:30 开出的富泰邨特别班次。', lastTitle: '计划末班 · {time}（{origin}开出）', shanKing: '山景邨', portTerminus: '深圳湾口岸', lastReference: '按参考时间表运行，实际班次以城巴为准。', lastSoon: '距离计划末班从总站开出还有约 {minutes} 分钟。', lastPassed: '今日计划末班发车时间已过，请确认实时预估。', beforeFirst: '尚未到今日计划首班时间 {time}。', lastOutNote: '末班可能仍在前往富泰邨；请查看该站实时预估，不能将总站时间当作到站时间。', lastInNote: '请提前到口岸候车；实时预估不保证能赶上末班。', lastConfirmed: '末班车 · 城巴标注', lastReminder: '末班车提醒'
+      },
+      'zh-TW': {
+        timetable: '時間表與尾班車', serviceDay: '服務日', schoolDay: '週一至五（上課日）', schoolHoliday: '週一至五（學校假期）', saturday: '星期六', sundayHoliday: '星期日及公眾假期', daySelection: '請手動選擇適用服務日；學校假期及公眾假期不會自動識別。', firstBus: '首班', lastBus: '尾班', period: '開出時段', headway: '班距（分鐘）', scheduleSource: '官方參考時間表（2025-08-25 生效）↗', terminusOut: '山景邨開出 · 往深圳灣口岸', terminusIn: '深圳灣口岸開出 · 往山景邨', timetableOut: '這是山景邨開出時間，並非富泰邨到站時間；富泰邨請以實時預估為準。時間表僅供參考，臨時調整以城巴公告為準。', timetableIn: '這是深圳灣口岸開出時間，於富泰商場下車。時間表僅供參考，臨時調整以城巴公告為準。', schoolSpecial: '上課日另有 08:30 開出的富泰邨特別班次。', lastTitle: '計劃尾班 · {time}（{origin}開出）', shanKing: '山景邨', portTerminus: '深圳灣口岸', lastReference: '按參考時間表運行，實際班次以城巴為準。', lastSoon: '距離計劃尾班從總站開出還有約 {minutes} 分鐘。', lastPassed: '今日計劃尾班開出時間已過，請確認實時預估。', beforeFirst: '尚未到今日計劃首班時間 {time}。', lastOutNote: '尾班可能仍在前往富泰邨；請查看該站實時預估，不能將總站時間當作到站時間。', lastInNote: '請提前到口岸候車；實時預估不保證能趕上尾班。', lastConfirmed: '尾班車 · 城巴標註', lastReminder: '尾班車提醒'
+      },
+      en: {
+        timetable: 'Timetable & last bus', serviceDay: 'Service day', schoolDay: 'Mon–Fri (school days)', schoolHoliday: 'Mon–Fri (school holidays)', saturday: 'Saturday', sundayHoliday: 'Sunday & public holidays', daySelection: 'Choose the applicable day manually; school and public holidays are not detected automatically.', firstBus: 'First', lastBus: 'Last', period: 'Departure period', headway: 'Headway (min)', scheduleSource: 'Official reference timetable (effective 25 Aug 2025) ↗', terminusOut: 'From Shan King Estate · toward Shenzhen Bay Port', terminusIn: 'From Shenzhen Bay Port · toward Shan King Estate', timetableOut: 'These are Shan King departure times, not arrival times at Fu Tai. Use live estimates at Fu Tai. Reference timetable; check Citybus notices for changes.', timetableIn: 'Departures from Shenzhen Bay Port; alight at Fu Tai Shopping Centre. Reference timetable; check Citybus notices for changes.', schoolSpecial: 'An additional 08:30 departure to Fu Tai Estate runs on school days.', lastTitle: 'Scheduled last bus · {time} (from {origin})', shanKing: 'Shan King Estate', portTerminus: 'Shenzhen Bay Port', lastReference: 'Based on the reference timetable; confirm actual service with Citybus.', lastSoon: 'About {minutes} min until the scheduled last departure from the terminus.', lastPassed: 'Today’s scheduled last departure time has passed. Check live estimates.', beforeFirst: 'Today’s scheduled first departure is at {time}.', lastOutNote: 'The last bus may still be travelling to Fu Tai. Check that stop’s live estimates; the terminus departure is not a Fu Tai arrival time.', lastInNote: 'Arrive at the port early; live estimates do not guarantee you can catch the last bus.', lastConfirmed: 'Last bus · marked by Citybus', lastReminder: 'Last bus reminder'
+      },
+      es: {
+        timetable: 'Horario y último bus', serviceDay: 'Día de servicio', schoolDay: 'Lun–vie (días lectivos)', schoolHoliday: 'Lun–vie (vacaciones escolares)', saturday: 'Sábado', sundayHoliday: 'Domingos y festivos', daySelection: 'Elige el día aplicable; no se detectan automáticamente las vacaciones escolares ni los festivos.', firstBus: 'Primero', lastBus: 'Último', period: 'Franja de salida', headway: 'Intervalo (min)', scheduleSource: 'Horario oficial de referencia (desde 25 ago 2025) ↗', terminusOut: 'Desde Shan King Estate · hacia Shenzhen Bay Port', terminusIn: 'Desde Shenzhen Bay Port · hacia Shan King Estate', timetableOut: 'Son salidas de Shan King, no llegadas a Fu Tai. Consulta las estimaciones en Fu Tai. Horario de referencia; revisa los avisos de Citybus.', timetableIn: 'Salidas de Shenzhen Bay Port; baja en Fu Tai Shopping Centre. Horario de referencia; revisa los avisos de Citybus.', schoolSpecial: 'En días lectivos hay una salida adicional a Fu Tai Estate a las 08:30.', lastTitle: 'Último bus previsto · {time} (desde {origin})', shanKing: 'Shan King Estate', portTerminus: 'Shenzhen Bay Port', lastReference: 'Según el horario de referencia; confirma el servicio con Citybus.', lastSoon: 'Faltan unos {minutes} min para la última salida prevista de la terminal.', lastPassed: 'La hora de la última salida prevista de hoy ya ha pasado. Consulta las estimaciones.', beforeFirst: 'La primera salida prevista de hoy es a las {time}.', lastOutNote: 'El último bus podría seguir de camino a Fu Tai. Consulta las estimaciones de esa parada; la salida de la terminal no es la llegada a Fu Tai.', lastInNote: 'Llega pronto al puerto; las estimaciones no garantizan que alcances el último bus.', lastConfirmed: 'Último bus · indicado por Citybus', lastReminder: 'Aviso del último bus'
+      }
+    };
+    for (const locale of Object.keys(languages)) Object.assign(languages[locale], scheduleLabels[locale]);
+    const lastStopNotes = {
+      'zh-CN': '此时间为山景邨发车时间，富泰邨到站时间请看实时预估。',
+      'zh-TW': '此時間為山景邨開出時間，富泰邨到站時間請看實時預估。',
+      en: 'This is a Shan King departure time. Check live arrival estimates at Fu Tai.',
+      es: 'Es la salida de Shan King. Consulta las llegadas estimadas a Fu Tai.'
+    };
     const directions = [
       { stop: '003261', dir: 'O', seq: 14, origin: 'fuTai', destination: 'port' },
       { stop: '003208', dir: 'I', seq: 1, origin: 'port', destination: 'fuTai' }
     ];
     let language = 'zh-CN', directionIndex = 0;
+    const initialWeekday = getHongKongClock(Date.now()).weekday;
+    let timetableDay = initialWeekday === 0 ? 'holiday' : initialWeekday === 6 ? 'sat' : 'school';
     try { const saved = localStorage.getItem('b3a-language'); if (Object.hasOwn(languages, saved)) language = saved; } catch {}
     const REFRESH_MS = 30000, STALE_MS = 180000;
     const byId = id => document.getElementById(id);
@@ -174,6 +240,53 @@
       return node;
     }
 
+    function getHongKongClock(now) {
+      const date = new Date(now + 8 * 60 * 60 * 1000);
+      return { weekday: date.getUTCDay(), minutes: date.getUTCHours() * 60 + date.getUTCMinutes() + date.getUTCSeconds() / 60 };
+    }
+
+    function getLastServiceState(now, routeIndex) {
+      const clock = getHongKongClock(now), schedule = schedules[routeIndex];
+      const toMinutes = value => { const [h, m] = value.split(':').map(Number); return h * 60 + m; };
+      const remaining = toMinutes(schedule.last) - clock.minutes;
+      const state = clock.minutes < toMinutes(schedule.first) ? 'beforeFirst' : remaining <= 0 ? 'passed' : remaining <= 60 ? 'soon' : 'normal';
+      return { state, remaining: Math.max(0, Math.ceil(remaining)) };
+    }
+
+    function renderTimetable() {
+      const schedule = schedules[directionIndex];
+      byId('timetable-day').value = timetableDay;
+      byId('first-bus').textContent = schedule.first;
+      byId('last-bus').textContent = schedule.last;
+      byId('timetable-origin').textContent = t(directionIndex === 0 ? 'terminusOut' : 'terminusIn');
+      const rows = byId('timetable-rows');
+      rows.replaceChildren();
+      for (const [period, headway] of schedule.days[timetableDay]) {
+        const row = document.createElement('tr');
+        row.append(element('td', '', period), element('td', '', headway));
+        rows.append(row);
+      }
+      byId('timetable-note').textContent = t(directionIndex === 0 ? 'timetableOut' : 'timetableIn')
+        + (directionIndex === 1 && timetableDay === 'school' ? ' ' + t('schoolSpecial') : '');
+    }
+
+    function renderLastService(now) {
+      const schedule = schedules[directionIndex], result = getLastServiceState(now, directionIndex);
+      const title = t('lastTitle', { time: schedule.last, origin: t(directionIndex === 0 ? 'shanKing' : 'portTerminus') });
+      const message = (result.state === 'soon' ? t('lastSoon', { minutes: result.remaining })
+        : result.state === 'passed' ? t('lastPassed')
+        : result.state === 'beforeFirst' ? t('beforeFirst', { time: schedule.first }) : t('lastReference'))
+        + ' ' + (directionIndex === 0 ? result.state === 'passed' ? t('lastOutNote') : lastStopNotes[language] : t('lastInNote'));
+      // Avoid re-announcing the same status on every one-second render.
+      if (byId('last-service-title').textContent !== title) byId('last-service-title').textContent = title;
+      if (byId('last-service-message').textContent !== message) byId('last-service-message').textContent = message;
+      byId('last-service').classList.toggle('urgent', result.state === 'soon' || result.state === 'passed');
+    }
+
+    function isOperatorLastBus(row) {
+      return ['rmk_tc', 'rmk_sc', 'rmk_en'].some(key => /^(?:尾班[車车]?|末班[車车]?|last bus|last departure)(?:\s|[（(：:]|$)/i.test((row[key] || '').trim()));
+    }
+
     function applyLanguage() {
       document.documentElement.lang = language;
       document.querySelectorAll('[data-i18n]').forEach(node => { node.textContent = t(node.dataset.i18n); });
@@ -181,6 +294,7 @@
       byId('language').setAttribute('aria-label', t('language'));
       byId('board').setAttribute('aria-label', t('board'));
       byId('refresh-progress').setAttribute('aria-label', t('progress'));
+      byId('last-service').setAttribute('aria-label', t('lastReminder'));
       const selected = directions[directionIndex], other = directions[1 - directionIndex];
       const labels = languages[language], route = labels.routes[directionIndex];
       for (const [side, station] of [['origin', selected.origin], ['destination', selected.destination]]) {
@@ -196,6 +310,7 @@
       byId('arrival-heading').textContent = t(directionIndex === 0 ? 'arrivalHeading' : 'departureHeading');
       byId('arrivals').setAttribute('aria-label', t('listLabel', { origin: labels.stations[selected.origin] }));
       byId('swap').setAttribute('aria-label', t('swapLabel', { origin: labels.stations[other.origin], destination: labels.stations[other.destination] }));
+      renderTimetable();
       render();
     }
 
@@ -209,6 +324,7 @@
 
     function render() {
       const now = Date.now(), remaining = Math.max(0, Math.ceil((nextRefresh - now) / 1000));
+      renderLastService(now);
       byId('clock').textContent = timeFormat.format(now) + ' · HKT';
       byId('refresh-countdown').textContent = loading ? t('updating') : t('countdown', { seconds: remaining });
       byId('updated').textContent = lastSuccess ? t('updated', { time: preciseFormat.format(lastSuccess) }) : t('waiting');
@@ -236,6 +352,7 @@
         const label = element('div', 'arrival-label', index === 0 ? t('next') : t('following', { number: index + 1 }));
         label.dataset.eyebrow = t('eyebrow');
         details.append(label, element('div', 'arrival-time', t('estimate', { time: timeFormat.format(new Date(row.eta)), action: t(directionIndex === 0 ? 'arrival' : 'departure') })));
+        if (!failed && !stale && isOperatorLastBus(row)) details.append(element('span', 'last-bus-badge', t('lastConfirmed')));
         const remark = operatorRemark(row);
         if (remark) details.append(element('div', 'remark', remark));
         const wait = element('div', 'wait', String(Math.max(0, Math.ceil((Date.parse(row.eta) - now) / 60000))));
@@ -268,6 +385,11 @@
       language = event.target.value;
       try { localStorage.setItem('b3a-language', language); } catch {}
       applyLanguage();
+    });
+    byId('timetable-day').addEventListener('change', event => {
+      if (!Object.hasOwn(schedules[directionIndex].days, event.target.value)) return;
+      timetableDay = event.target.value;
+      renderTimetable();
     });
     byId('swap').addEventListener('click', () => {
       if (loading) return;
